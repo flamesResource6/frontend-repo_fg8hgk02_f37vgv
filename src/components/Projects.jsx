@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 
 const projects = [
   {
@@ -26,6 +27,8 @@ export default function Projects() {
 
   return (
     <section id="projects" className="relative bg-gradient-to-b from-black to-black/95 text-white py-24">
+      <div className="pointer-events-none absolute inset-x-0 top-0 mx-auto h-40 max-w-5xl bg-gradient-to-b from-fuchsia-500/10 to-transparent blur-3xl" />
+
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex items-end justify-between flex-wrap gap-6">
           <div>
@@ -48,25 +51,31 @@ export default function Projects() {
 
         <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
           {projects.map((p, i) => (
-            <a
+            <motion.a
               key={p.title}
               href={p.link}
-              className={`group relative rounded-xl border border-white/10 bg-white/5 p-5 transition transform hover:-translate-y-1 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/20 ${active === i ? 'ring-2 ring-white/20' : ''}`}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
+              whileHover={{ y: -8 }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
+              className={`group relative overflow-hidden rounded-xl border border-white/10 bg-white/5 p-5 transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/20 ${active === i ? 'ring-2 ring-white/20' : ''}`}
             >
-              <div className="flex items-start justify-between">
+              <div className="pointer-events-none absolute -inset-10 bg-gradient-to-tr from-fuchsia-500/10 via-indigo-500/10 to-cyan-500/10 opacity-0 transition group-hover:opacity-100" />
+              <div className="relative flex items-start justify-between">
                 <h3 className="text-lg font-semibold">{p.title}</h3>
                 <span className="text-xs text-white/60">Case study</span>
               </div>
-              <p className="mt-2 text-white/70 text-sm">{p.desc}</p>
-              <div className="mt-4 flex flex-wrap gap-2">
+              <p className="relative mt-2 text-white/70 text-sm">{p.desc}</p>
+              <div className="relative mt-4 flex flex-wrap gap-2">
                 {p.tags.map((t) => (
                   <span key={t} className="text-xs px-2 py-1 rounded-md bg-white/10 text-white/80">
                     {t}
                   </span>
                 ))}
               </div>
-              <span className="absolute inset-0 rounded-xl ring-1 ring-inset ring-white/10 pointer-events-none" />
-            </a>
+              <span className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-white/10" />
+            </motion.a>
           ))}
         </div>
       </div>

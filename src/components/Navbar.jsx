@@ -1,35 +1,64 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import { Rocket, Play, Sparkles } from 'lucide-react';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener('scroll', onScroll);
+    window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const linkBase = 'text-sm font-medium transition-colors hover:text-white/90';
-
-  const scrollTo = (id) => {
+  const scrollToId = (id) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   return (
-    <header className={`fixed inset-x-0 top-0 z-30 ${scrolled ? 'backdrop-blur-md bg-black/40 border-b border-white/10' : 'bg-transparent'}`}>
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <button onClick={() => scrollTo('home')} className="flex items-center gap-2 group">
-          <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-indigo-500 via-sky-500 to-cyan-400 shadow-md" />
-          <span className="text-white font-semibold tracking-tight group-hover:opacity-90">Flames • Portfolio</span>
+    <motion.nav
+      initial={{ y: -40, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
+      className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-lg transition-colors ${
+        scrolled ? 'bg-black/50' : 'bg-transparent'
+      }`}
+    >
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
+        <button
+          onClick={() => scrollToId('home')}
+          className="group inline-flex items-center gap-2 text-white"
+        >
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-fuchsia-500 to-indigo-500">
+            <Rocket className="h-4 w-4 text-white" />
+          </span>
+          <span className="font-semibold tracking-tight">My Interactive Portfolio</span>
         </button>
-        <div className="hidden md:flex items-center gap-8 text-white/80">
-          <button onClick={() => scrollTo('projects')} className={linkBase}>Projects</button>
-          <button onClick={() => scrollTo('about')} className={linkBase}>About</button>
-          <button onClick={() => scrollTo('contact')} className={linkBase}>Contact</button>
-          <a href="#" className="px-3 py-1.5 rounded-md bg-white/10 text-white hover:bg-white/20 transition-colors">Resume</a>
+        <div className="hidden items-center gap-2 md:flex">
+          {[
+            { id: 'home', label: 'Home' },
+            { id: 'projects', label: 'Projects' },
+            { id: 'contact', label: 'Contact' },
+          ].map((link) => (
+            <button
+              key={link.id}
+              onClick={() => scrollToId(link.id)}
+              className="rounded-full px-4 py-2 text-sm text-white/80 transition hover:text-white"
+            >
+              {link.label}
+            </button>
+          ))}
         </div>
-      </nav>
-    </header>
+        <button
+          onClick={() => scrollToId('projects')}
+          className="group inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm text-white transition hover:bg-white/20"
+        >
+          <Play className="h-4 w-4" />
+          <span>Explore</span>
+          <Sparkles className="h-4 w-4 opacity-0 transition group-hover:opacity-100" />
+        </button>
+      </div>
+    </motion.nav>
   );
 }
